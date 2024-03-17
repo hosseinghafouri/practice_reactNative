@@ -1,0 +1,3 @@
+1. expo CLI & reactNative CLI fremwork for react native
+simulator: ios & emulator: android شبیه ساز
+we have 3 type of component  in reactNative : 1. core components 2. community components 3. Your native components
