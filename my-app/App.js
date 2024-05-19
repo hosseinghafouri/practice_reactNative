@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFonts } from "expo-font";
 import {
   View,
   Text,
@@ -19,45 +20,53 @@ import {
   Modal,
 } from "react-native";
 import { useDeviceOrientation } from "@react-native-community/hooks";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 
 function App() {
+ 
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   return (
-    <View
-      style={{
-        backgroundColor: "#FFF",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        alignContent: "center",
-        flexWrap: "wrap"
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "blue",
-          width: 100,
-          height: 100,
-        }}
-      />
-      <View
-        style={{
-          backgroundColor: "gold",
-          width: 100,
-          height: 100,
-        }}
-      />
-      <View
-        style={{
-          backgroundColor: "grey",
-          width: 100,
-          height: 100,
-        }}
-      />
+    <View style={styles.container}>
+      <Text style={styles.paragraph}>{text}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 25,
+    fontFamily: "asghar",
+  },
+});
 
 export default App;
